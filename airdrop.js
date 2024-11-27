@@ -50,82 +50,51 @@ async function InstantiateAirdropContract(codeId) {
 }
 
 async function QueryConfig(contractAddress) {
+    console.log(contractAddress)
     // Upload contract
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
     const config = await sender_client.queryContractSmart(contractAddress,
     {
-        "Config":"{}"
+        config: {}
     })
     console.info(`Aidrop config: `, config);
 
     return config;
 }
 
-
-async function sendTokens() {
-    const gasPrice = GasPrice.fromString("0.05ubluechip");
-    const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
-    const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
-    const executeFee = calculateFee(300_000, gasPrice);
-    const msg =
-    {
-        transfer: {
-            recipient: "osmo17ruwha2r5yj0r4gwdjqw2y0kep3qjz3yrk99k7",
-            amount: "500000000"
-        }
-
-    }
-
-    const create_result = await sender_client.execute(
-        sender.address,
-        "mun1suhgf5svhu4usrurvxzlgn54ksxmn8gljarjtxqnapv8kjnp4nrsfttf7h",
-        msg,
-        executeFee,
-        "",
-    );
-    console.log("SetMaximumNum", create_result)
-
-}
-
-async function sendIBCPacket() {
-    const gasPrice = GasPrice.fromString("0.05ubluechip");
-    const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
-    const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
-    const executeFee = calculateFee(300_000, gasPrice);
-    const msg =
-    {
-        "encrypt_add": {
-            "channel_id":"channel-1793", // IBC channel
-            "contract_address":"0xCBC18EF2bF2b9e315a8670fCe688E57e9d7a15fd", 
-            "function_name":"add",
-            "argument":"5" 
-        }
-
-    }
-
-    const send_ibc_result = await sender_client.execute(
-        sender.address,
-        "osmo148ezcd79z6llt75l3fu9xsrp8sde3ldyqw0kefpz3xwx4tc0dyrssgz063",
-        msg,
-        executeFee,
-        "",
-    );
-    console.log("SendIBCPacket", send_ibc_result)
-}
-
-async function getResult() {
+async function QueryIsWhitelisted(contractAddress, address) {
+    console.log(contractAddress)
     // Upload contract
-    const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "osmo" });
+    const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
-    const result = await sender_client.queryContractSmart("osmo148ezcd79z6llt75l3fu9xsrp8sde3ldyqw0kefpz3xwx4tc0dyrssgz063",
+    const isWhitelisted = await sender_client.queryContractSmart(contractAddress,
     {
-        list_results:{
-        }
+        is_whitelisted: {address: address}
     })
-    console.info(`Result: `, result);
+    console.info(`Aidrop isWhitelisted: `, isWhitelisted);
 
-    return result;
+    return isWhitelisted;
 }
 
-module.exports = {UploadAirdropContract, InstantiateAirdropContract, QueryConfig};
+async function QueryIsClaimed(contractAddress, address) {
+    console.log(contractAddress)
+    // Upload contract
+    const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
+    const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
+    const isClaimed = await sender_client.queryContractSmart(contractAddress,
+    {
+        is_claimed: {address : address }
+    })
+    console.info(`Aidrop is claimed: `, isClaimed);
+
+    return isClaimed;
+}
+
+module.exports = {
+    UploadAirdropContract, 
+    InstantiateAirdropContract, 
+    QueryConfig,
+    QueryIsWhitelisted,
+    QueryIsClaimed,
+};
