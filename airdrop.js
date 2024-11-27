@@ -18,16 +18,16 @@ async function UploadAirdropContract() {
     return uploadVault.codeId;
 }
 
-async function InstantiateAirdropContract(codeId) {
+async function InstantiateAirdropContract(codeId, total_whitelist_wallets, eligible_wallets, airdrop_amount) {
     // // Instantiate
     const gasPrice = GasPrice.fromString("0.05ubluechip");
     const instantiateFee = calculateFee(500_000, gasPrice);
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
     const initMsg = {
-        "total_whitelist_wallets": "0",
-        "eligible_wallets": "0",
-        "airdrop_amount": "100000000",
+        "total_whitelist_wallets": total_whitelist_wallets,
+        "eligible_wallets": eligible_wallets,
+        "airdrop_amount": airdrop_amount,
     };
 
     const { contractAddress } = await sender_client.instantiate(
@@ -47,9 +47,9 @@ async function QueryConfig(contractAddress) {
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
     const config = await sender_client.queryContractSmart(contractAddress,
-    {
-        config: {}
-    })
+        {
+            config: {}
+        })
     console.info(`Aidrop config: `, config);
 
     return config;
@@ -60,9 +60,9 @@ async function QueryIsWhitelisted(contractAddress, address) {
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
     const isWhitelisted = await sender_client.queryContractSmart(contractAddress,
-    {
-        is_whitelisted: {address: address}
-    })
+        {
+            is_whitelisted: { address: address }
+        })
     console.info(`Aidrop isWhitelisted: `, isWhitelisted);
 
     return isWhitelisted;
@@ -73,18 +73,39 @@ async function QueryIsClaimed(contractAddress, address) {
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
     const isClaimed = await sender_client.queryContractSmart(contractAddress,
-    {
-        is_claimed: {address : address }
-    })
+        {
+            is_claimed: { address: address }
+        })
     console.info(`Aidrop is claimed: `, isClaimed);
 
     return isClaimed;
 }
 
+async function ExecuteStart(contractAddress) {
+    const gasPrice = GasPrice.fromString("0.05ubluechip");
+    const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
+    const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
+    const executeFee = calculateFee(300_000, gasPrice);
+    const msg = {
+        start: {
+        },
+    };
+
+    const create_result = await sender_client.execute(
+        sender.address,
+        contractAddress,
+        msg,
+        executeFee,
+        "",
+    );
+    console.log("Airdrop started", create_result)
+}
+
 module.exports = {
-    UploadAirdropContract, 
-    InstantiateAirdropContract, 
+    UploadAirdropContract,
+    InstantiateAirdropContract,
     QueryConfig,
     QueryIsWhitelisted,
     QueryIsClaimed,
+    ExecuteStart,
 };
