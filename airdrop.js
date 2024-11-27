@@ -1,6 +1,6 @@
-const { calculateFee, GasPrice, isMsgSubmitProposalEncodeObject } = require("@cosmjs/stargate");
+const { calculateFee, GasPrice } = require("@cosmjs/stargate");
 const { DirectSecp256k1HdWallet } = require("@cosmjs/proto-signing");
-const { SigningCosmWasmClient, CosmWasmClient } = require("@cosmjs/cosmwasm-stargate");
+const { SigningCosmWasmClient } = require("@cosmjs/cosmwasm-stargate");
 const _ = require("fs");
 
 // const rpcEndpoint = "https://bluechip.rpc.bluechip.link:443";
@@ -32,9 +32,9 @@ async function InstantiateAirdropContract(codeId) {
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
     const initMsg = {
-        "TotalWhitelistWallets": 0,
-        "EligibleWallets": 0,
-        "AirdropAmount": 100000000,
+        "total_whitelist_wallets": "0",
+        "eligible_wallets": "0",
+        "airdrop_amount": "100000000",
     };
 
     const { contractAddress } = await sender_client.instantiate(
@@ -46,22 +46,20 @@ async function InstantiateAirdropContract(codeId) {
         { memo: `Create a airdrop contract instance` },
     );
     console.info(`Contract instantiated at: `, contractAddress);
-
+    return contractAddress;
 }
 
-async function getBalance() {
+async function QueryConfig(contractAddress) {
     // Upload contract
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
-    const balance = await sender_client.queryContractSmart("osmo17a5wqch2wnvst55e7zg8a2m59ehwty2xurls0vhy2cm2luap8mfq97xyxp",
+    const config = await sender_client.queryContractSmart(contractAddress,
     {
-        balance:{
-            address:"osmo17ruwha2r5yj0r4gwdjqw2y0kep3qjz3yrk99k7"
-        }
+        "Config":"{}"
     })
-    console.info(`DGM balance: `, balance);
+    console.info(`Aidrop config: `, config);
 
-    return balance;
+    return config;
 }
 
 
@@ -130,10 +128,4 @@ async function getResult() {
     return result;
 }
 
-export {UploadAirdropContract, InstantiateAirdropContract}
-// uploadContract()
-// instantiateContract(1)
-// getBalance()
-// sendTokens()
-// sendIBCPacket()
-// getResult()
+module.exports = {UploadAirdropContract, InstantiateAirdropContract, QueryConfig};
