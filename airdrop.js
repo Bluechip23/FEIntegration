@@ -101,6 +101,26 @@ async function ExecuteStart(contractAddress) {
     console.log("Airdrop started", create_result)
 }
 
+async function ExecuteClaim(contractAddress) {
+    const gasPrice = GasPrice.fromString("0.05ubluechip");
+    const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
+    const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
+    const executeFee = calculateFee(300_000, gasPrice);
+    const msg = {
+        claim: {
+        },
+    };
+
+    const create_result = await sender_client.execute(
+        sender.address,
+        contractAddress,
+        msg,
+        executeFee,
+        "",
+    );
+    console.log("Airdrop claimed", create_result)
+}
+
 module.exports = {
     UploadAirdropContract,
     InstantiateAirdropContract,
@@ -108,4 +128,5 @@ module.exports = {
     QueryIsWhitelisted,
     QueryIsClaimed,
     ExecuteStart,
+    ExecuteClaim,
 };

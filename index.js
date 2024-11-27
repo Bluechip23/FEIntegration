@@ -5,6 +5,7 @@ const {
     QueryIsWhitelisted,
     QueryIsClaimed,
     ExecuteStart,
+    ExecuteClaim,
  } = require("./airdrop");
 
 async function deployAndInstantiateAirdropContract() {
@@ -29,17 +30,25 @@ async function queryIsClaimedAirdrop(contractAddress, address) {
 async function executeStartAirdrop(contractAddress, address) {
     await ExecuteStart(contractAddress)
 }
+
+async function executeClaimAirdrop(contractAddress, address) {
+    await ExecuteClaim(contractAddress)
+}
+
 // 1. Deploy and instantiate
 // contractAddress = deployAndInstantiateAirdropContract()
 // 2. Query config
 // queryConfigAirdrop(contractAddress)
-queryConfigAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h")
+// queryConfigAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h")
 // 3. Query is whitelisted
 // queryIsWhitelistedAirdrop(contractAddress, address)
-queryIsWhitelistedAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h", "bluechip14u53eghrurpeyx5cm47vm3qwugtmhcpnjvtxwj")
+// queryIsWhitelistedAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h", "bluechip14u53eghrurpeyx5cm47vm3qwugtmhcpnjvtxwj")
 // 4. Query is claimed
 // queryIsClaimedAirdrop(contractAddress, address)
-queryIsClaimedAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h", "bluechip14u53eghrurpeyx5cm47vm3qwugtmhcpnjvtxwj")
+// queryIsClaimedAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h", "bluechip14u53eghrurpeyx5cm47vm3qwugtmhcpnjvtxwj")
 
 // 5. Execute start airdrop
-executeStartAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h")
+// executeStartAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h")
+
+// 6. Execute claim airdrop
+executeClaimAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h")
