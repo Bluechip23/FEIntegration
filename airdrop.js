@@ -2,14 +2,7 @@ const { calculateFee, GasPrice } = require("@cosmjs/stargate");
 const { DirectSecp256k1HdWallet } = require("@cosmjs/proto-signing");
 const { SigningCosmWasmClient } = require("@cosmjs/cosmwasm-stargate");
 const _ = require("fs");
-
-// const rpcEndpoint = "https://bluechip.rpc.bluechip.link:443";
-const rpcEndpoint = "http://localhost:26657";
-
-const sender = {
-    mnemonic: "bottom soccer blue sniff use improve rough use amateur senior transfer quarter",
-    address: "bluechip14u53eghrurpeyx5cm47vm3qwugtmhcpnjvtxwj",
-};
+const { rpcEndpoint, sender } = require("./common");
 
 async function UploadAirdropContract() {
     const airdropWasm = "./wasms/airdrop.wasm";
@@ -50,7 +43,6 @@ async function InstantiateAirdropContract(codeId) {
 }
 
 async function QueryConfig(contractAddress) {
-    console.log(contractAddress)
     // Upload contract
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
@@ -64,7 +56,6 @@ async function QueryConfig(contractAddress) {
 }
 
 async function QueryIsWhitelisted(contractAddress, address) {
-    console.log(contractAddress)
     // Upload contract
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
@@ -78,7 +69,6 @@ async function QueryIsWhitelisted(contractAddress, address) {
 }
 
 async function QueryIsClaimed(contractAddress, address) {
-    console.log(contractAddress)
     // Upload contract
     const sender_wallet = await DirectSecp256k1HdWallet.fromMnemonic(sender.mnemonic, { prefix: "bluechip" });
     const sender_client = await SigningCosmWasmClient.connectWithSigner(rpcEndpoint, sender_wallet);
