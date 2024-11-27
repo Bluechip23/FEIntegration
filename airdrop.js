@@ -1,4 +1,4 @@
-const { calculateFee, GasPrice } = require("@cosmjs/stargate");
+const { calculateFee, GasPrice, StargateClient } = require("@cosmjs/stargate");
 const { DirectSecp256k1HdWallet } = require("@cosmjs/proto-signing");
 const { SigningCosmWasmClient } = require("@cosmjs/cosmwasm-stargate");
 const _ = require("fs");
@@ -121,12 +121,21 @@ async function ExecuteClaim(contractAddress) {
     console.log("Airdrop claimed", create_result)
 }
 
+async function QueryBalance(address) {
+    const client = await StargateClient.connect(rpcEndpoint)
+    const balance = await client.getAllBalances(address)
+    console.info(`BCP balance: `, balance);
+
+    return balance;
+}
+
 module.exports = {
     UploadAirdropContract,
     InstantiateAirdropContract,
     QueryConfig,
     QueryIsWhitelisted,
     QueryIsClaimed,
+    QueryBalance,
     ExecuteStart,
     ExecuteClaim,
 };

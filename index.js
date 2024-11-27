@@ -4,6 +4,7 @@ const {
     QueryConfig,
     QueryIsWhitelisted,
     QueryIsClaimed,
+    QueryBalance,
     ExecuteStart,
     ExecuteClaim,
  } = require("./airdrop");
@@ -27,6 +28,10 @@ async function queryIsClaimedAirdrop(contractAddress, address) {
     await QueryIsClaimed(contractAddress, address)
 }
 
+async function queryBalanceAirdrop(contractAddress, address) {
+    await QueryBalance(address)
+}
+
 async function executeStartAirdrop(contractAddress, address) {
     await ExecuteStart(contractAddress)
 }
@@ -48,7 +53,12 @@ async function executeClaimAirdrop(contractAddress, address) {
 // queryIsClaimedAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h", "bluechip14u53eghrurpeyx5cm47vm3qwugtmhcpnjvtxwj")
 
 // 5. Execute start airdrop
+// executeStartAirdrop(contractAddress)
 // executeStartAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h")
 
 // 6. Execute claim airdrop
-executeClaimAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h")
+// executeClaimAirdrop(contractAddress)
+// executeClaimAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h")
+
+// 7. query token balance
+queryBalanceAirdrop("bluechip1hrpna9v7vs3stzyd4z3xf00676kf78zpe2u5ksvljswn2vnjp3ysvzsv2h", "bluechip14u53eghrurpeyx5cm47vm3qwugtmhcpnjvtxwj")
